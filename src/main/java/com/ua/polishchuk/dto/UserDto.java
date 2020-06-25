@@ -23,9 +23,11 @@ public class UserDto implements UserDetails {
 
     private Integer id;
 
+    @NotBlank(message = "Empty first name")
     @Size(max = 50, message = "Too long first name")
     private String firstName;
 
+    @NotBlank(message = "Empty last name")
     @Size(max = 50, message = "Too long last name")
     private String lastName;
 

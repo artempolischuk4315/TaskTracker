@@ -1,19 +1,20 @@
 package com.ua.polishchuk.service;
 
+import com.ua.polishchuk.dto.UpdateUserDto;
 import com.ua.polishchuk.dto.UserDto;
 import com.ua.polishchuk.entity.Role;
 import com.ua.polishchuk.entity.User;
 import com.ua.polishchuk.repository.UserRepository;
 import com.ua.polishchuk.service.mapper.EntityMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -34,21 +35,15 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public List<UserDto> findAll(Pageable pageable){
-        return userRepository.findAll(pageable)
-                .stream()
-                .map(mapper::mapEntityToDto)
-                .collect(Collectors.toList());
+    public Page<UserDto> findAll(Pageable pageable){
+        return userRepository
+                .findAll(pageable)
+                .map(mapper::mapEntityToDto);
     }
 
     public UserDto findById(Integer id){
         return mapper.mapEntityToDto(userRepository
                 .findById(id).orElseThrow((EntityNotFoundException::new)));
-    }
-
-    public UserDto findByEmail(String email){
-        return mapper.mapEntityToDto(userRepository
-                .findByEmail(email).orElseThrow((EntityNotFoundException::new)));
     }
 
     public UserDto save(UserDto userDto){
@@ -70,26 +65,39 @@ public class UserService {
         return userEntity;
     }
 
-    public UserDto update(UserDto userDto, Integer userId){
+    public UserDto update(UpdateUserDto updateUserDto, Integer userId){
 
-        checkIfUserExists(userId);
-
-        User user = mapper.mapDtoToEntity(userDto);
+        User user = setParametersOfUpdatedUser(getUserIfExists(userId), updateUserDto);
 
         return mapper.mapEntityToDto(userRepository.save(user));
     }
 
     public void delete(Integer userId){
 
-        checkIfUserExists(userId);
+        getUserIfExists(userId);
 
         userRepository.deleteById(userId);
     }
 
-    private void checkIfUserExists(Integer userId) {
-        if(!userRepository.findById(userId).isPresent()){
-            throw new EntityExistsException(USER_NOT_PRESENT );
+    private User setParametersOfUpdatedUser(User user, UpdateUserDto updateUserDto){
+
+        return User.builder()
+                .role(Role.valueOf(updateUserDto.getRole().toUpperCase()))
+                .firstName(updateUserDto.getFirstName())
+                .lastName(updateUserDto.getLastName())
+                .id(user.getId())
+                .email(user.getEmail())
+                .password(user.getPassword())
+                .build();
+    }
+
+    private User getUserIfExists(Integer userId) {
+
+        Optional <User> user = userRepository.findById(userId);
+        if(!user.isPresent()){
+            throw new EntityNotFoundException(USER_NOT_PRESENT);
         }
+        return user.get();
     }
 
     private void checkIfUserAlreadyRegistered(UserDto userDto) {

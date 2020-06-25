@@ -24,7 +24,7 @@ public class LoginService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!");
         return userRepository
                 .findByEmail(email)
                 .map(userMapper::mapEntityToDto)
