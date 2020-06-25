@@ -1,0 +1,5 @@
+persistence.xml
+.idea
+*.iml
+target
+*.log
