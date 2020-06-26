@@ -1,7 +1,7 @@
 package com.ua.polishchuk.facade;
 
-import com.ua.polishchuk.dto.UpdateUserDto;
 import com.ua.polishchuk.dto.UserDto;
+import com.ua.polishchuk.dto.UserFieldsToUpdate;
 import com.ua.polishchuk.entity.User;
 import com.ua.polishchuk.service.UserService;
 import com.ua.polishchuk.service.mapper.EntityMapper;
@@ -37,9 +37,9 @@ public class UserFacade {
         return mapper.mapEntityToDto(userService.save(mapper.mapDtoToEntity(userDto)));
     }
 
-    public UserDto update(UpdateUserDto updateUserDto, Integer id){
+    public UserDto update(UserFieldsToUpdate fieldsToUpdate, Integer id){
 
-        return mapper.mapEntityToDto(userService.update(updateUserDto, id));
+        return mapper.mapEntityToDto(userService.update(fieldsToUpdate, id));
     }
 
     public void delete(Integer id){

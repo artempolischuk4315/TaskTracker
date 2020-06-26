@@ -1,7 +1,7 @@
 package com.ua.polishchuk.controller;
 
-import com.ua.polishchuk.dto.UpdateUserDto;
 import com.ua.polishchuk.dto.UserDto;
+import com.ua.polishchuk.dto.UserFieldsToUpdate;
 import com.ua.polishchuk.entity.Role;
 import com.ua.polishchuk.facade.UserFacade;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,13 +64,8 @@ public class UserController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Object> update(
-            @Valid @RequestBody UpdateUserDto updateUserDto,
+            @Valid @RequestBody UserFieldsToUpdate fieldsToUpdate,
                 BindingResult bindingResult, @PathVariable Integer id){
-
-        if(!Role.contains(updateUserDto.getRole())){
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST).body(WRONG_ROLE_TYPE);
-        }
 
         if(bindingResult.hasErrors()){
             Map<String, Object> body = getAllErrorsList(bindingResult);
@@ -78,8 +73,8 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
         }
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(userFacade.update(updateUserDto, id));
+        return Role.contains(fieldsToUpdate.getRole()) ?
+                updateAndGetOk(fieldsToUpdate, id) : getBadRequestAnswer();
     }
 
     @DeleteMapping("/{id}")
@@ -88,6 +83,16 @@ public class UserController {
         userFacade.delete(id);
 
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    private ResponseEntity<Object> updateAndGetOk(@RequestBody @Valid UserFieldsToUpdate fieldsToUpdate, @PathVariable Integer id) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(userFacade.update(fieldsToUpdate, id));
+    }
+
+    private ResponseEntity<Object> getBadRequestAnswer() {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST).body(WRONG_ROLE_TYPE);
     }
 
     private Map<String, Object> getAllErrorsList(BindingResult bindingResult) {

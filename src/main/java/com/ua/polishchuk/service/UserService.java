@@ -1,6 +1,6 @@
 package com.ua.polishchuk.service;
 
-import com.ua.polishchuk.dto.UpdateUserDto;
+import com.ua.polishchuk.dto.UserFieldsToUpdate;
 import com.ua.polishchuk.entity.Role;
 import com.ua.polishchuk.entity.User;
 import com.ua.polishchuk.repository.UserRepository;
@@ -57,8 +57,8 @@ public class UserService {
     }
 
     @Transactional
-    public User update(UpdateUserDto updatedFields, Integer userId){
-        User user = setParametersOfUpdatedUser(getUserIfExists(userId), updatedFields);
+    public User update(UserFieldsToUpdate fieldsToUpdate, Integer userId){
+        User user = setParametersOfUpdatedUser(getUserIfExists(userId), fieldsToUpdate);
 
         return userRepository.save(user);
     }
@@ -89,11 +89,11 @@ public class UserService {
         return userEntity;
     }
 
-    private User setParametersOfUpdatedUser(User userToUpdate, UpdateUserDto updateUserDto){
+    private User setParametersOfUpdatedUser(User userToUpdate, UserFieldsToUpdate fieldsToUpdate){
         return User.builder()
-                .role(Role.valueOf(updateUserDto.getRole().toUpperCase()))
-                .firstName(updateUserDto.getFirstName())
-                .lastName(updateUserDto.getLastName())
+                .role(Role.valueOf(fieldsToUpdate.getRole().toUpperCase()))
+                .firstName(fieldsToUpdate.getFirstName())
+                .lastName(fieldsToUpdate.getLastName())
                 .id(userToUpdate.getId())
                 .email(userToUpdate.getEmail())
                 .password(userToUpdate.getPassword())

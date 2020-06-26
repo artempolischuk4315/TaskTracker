@@ -12,7 +12,7 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UpdateUserDto {
+public class UserFieldsToUpdate {
 
     @NotBlank(message = "Empty first name")
     @Size(max = 50, message = "Too long first name")
