@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Service
@@ -23,9 +24,7 @@ public class UserService {
     private static final String USER_NOT_PRESENT =  "User doesn't exists";
 
     private final EntityMapper<User, UserDto> mapper;
-
     private final BCryptPasswordEncoder encoder;
-
     private final UserRepository userRepository;
 
     @Autowired
@@ -35,64 +34,58 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public Page<UserDto> findAll(Pageable pageable){
+    public Page<User> findAll(Pageable pageable){
         return userRepository
-                .findAll(pageable)
-                .map(mapper::mapEntityToDto);
+                .findAll(pageable);
     }
 
-    public UserDto findById(Integer id){
-        return mapper.mapEntityToDto(userRepository
-                .findById(id).orElseThrow((EntityNotFoundException::new)));
+    public User findById(Integer id){
+        return userRepository
+                .findById(id).orElseThrow((EntityNotFoundException::new));
     }
 
-    public UserDto save(UserDto userDto){
+    @Transactional
+    public User save(User user){
+        checkIfUserAlreadyRegistered(user);
 
-        checkIfUserAlreadyRegistered(userDto);
+        user = prepareEntityForSaving(user);
 
-        User userEntity = prepareEntityForSaving(userDto);
-
-        return mapper.mapEntityToDto(userRepository.save(userEntity));
+        return userRepository.save(user);
     }
 
-    private User prepareEntityForSaving(UserDto userDto) {
-        User userEntity = mapper.mapDtoToEntity(userDto);
-        userEntity.setPassword(encoder.encode(userDto.getPassword()));
+    @Transactional
+    public User update(UpdateUserDto updatedFields, Integer userId){
+        User user = setParametersOfUpdatedUser(getUserIfExists(userId), updatedFields);
 
-        if(userDto.getRole()==null){
+        return userRepository.save(user);
+    }
+
+    @Transactional
+    public void delete(Integer userId){
+        userRepository.delete(getUserIfExists(userId));
+    }
+
+    private User prepareEntityForSaving(User userEntity) {
+        userEntity.setPassword(encoder.encode(userEntity.getPassword()));
+
+        if(userEntity.getRole()==null){
             userEntity.setRole(Role.USER);
         }
         return userEntity;
     }
 
-    public UserDto update(UpdateUserDto updateUserDto, Integer userId){
-
-        User user = setParametersOfUpdatedUser(getUserIfExists(userId), updateUserDto);
-
-        return mapper.mapEntityToDto(userRepository.save(user));
-    }
-
-    public void delete(Integer userId){
-
-        getUserIfExists(userId);
-
-        userRepository.deleteById(userId);
-    }
-
-    private User setParametersOfUpdatedUser(User user, UpdateUserDto updateUserDto){
-
+    private User setParametersOfUpdatedUser(User userToUpdate, UpdateUserDto updateUserDto){
         return User.builder()
                 .role(Role.valueOf(updateUserDto.getRole().toUpperCase()))
                 .firstName(updateUserDto.getFirstName())
                 .lastName(updateUserDto.getLastName())
-                .id(user.getId())
-                .email(user.getEmail())
-                .password(user.getPassword())
+                .id(userToUpdate.getId())
+                .email(userToUpdate.getEmail())
+                .password(userToUpdate.getPassword())
                 .build();
     }
 
     private User getUserIfExists(Integer userId) {
-
         Optional <User> user = userRepository.findById(userId);
         if(!user.isPresent()){
             throw new EntityNotFoundException(USER_NOT_PRESENT);
@@ -100,9 +93,9 @@ public class UserService {
         return user.get();
     }
 
-    private void checkIfUserAlreadyRegistered(UserDto userDto) {
-        userRepository.findByEmail(userDto.getEmail()).ifPresent(u -> {
-            throw new EntityExistsException(USER_ALREADY_REGISTERED + userDto.getEmail());
+    private void checkIfUserAlreadyRegistered(User user) {
+        userRepository.findByEmail(user.getEmail()).ifPresent(u -> {
+            throw new EntityExistsException(USER_ALREADY_REGISTERED + user.getEmail());
         });
     }
 }

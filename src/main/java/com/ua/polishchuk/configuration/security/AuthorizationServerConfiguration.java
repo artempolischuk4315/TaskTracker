@@ -28,9 +28,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     private static final int REFRESH_TOKEN_VALIDITY_SECONDS = 6*60*60;
 
     private TokenStore tokenStore;
-
     private AuthenticationManager authenticationManager;
-
     private PasswordEncoder encoder;
 
     @Autowired
@@ -42,7 +40,6 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 
     @Override
     public void configure(ClientDetailsServiceConfigurer configurer) throws Exception {
-
         configurer
                 .inMemory()
                 .withClient(CLIENT_ID)

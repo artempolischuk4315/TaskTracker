@@ -2,7 +2,6 @@ package com.ua.polishchuk.service.mapper.impl;
 
 
 import com.ua.polishchuk.dto.UserDto;
-import com.ua.polishchuk.entity.Role;
 import com.ua.polishchuk.entity.User;
 import com.ua.polishchuk.service.mapper.EntityMapper;
 import org.springframework.stereotype.Component;

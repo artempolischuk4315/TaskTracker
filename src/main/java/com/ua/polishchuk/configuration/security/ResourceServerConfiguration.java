@@ -14,7 +14,6 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
     private static final String RESOURCE_ID = "resource_id";
 
     private static final String[] AUTH_WHITELIST = {
-
             "/swagger-resources/**",
             "/swagger-ui.html",
             "/v2/api-docs",
