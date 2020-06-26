@@ -2,11 +2,9 @@ package com.ua.polishchuk.entity;
 
 import org.springframework.security.core.GrantedAuthority;
 
-import java.util.Enumeration;
-
 public enum Role implements GrantedAuthority {
-    USER,
-    ADMIN;
+    ROLE_USER,
+    ROLE_ADMIN;
 
     @Override
     public String getAuthority() {

@@ -1,11 +1,9 @@
 package com.ua.polishchuk.service;
 
 import com.ua.polishchuk.dto.UpdateUserDto;
-import com.ua.polishchuk.dto.UserDto;
 import com.ua.polishchuk.entity.Role;
 import com.ua.polishchuk.entity.User;
 import com.ua.polishchuk.repository.UserRepository;
-import com.ua.polishchuk.service.mapper.EntityMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,15 +21,15 @@ public class UserService {
     private static final String USER_ALREADY_REGISTERED = "User already registered with provided email ";
     private static final String USER_NOT_PRESENT =  "User doesn't exists";
 
-    private final EntityMapper<User, UserDto> mapper;
     private final BCryptPasswordEncoder encoder;
     private final UserRepository userRepository;
+    private final TaskService taskService;
 
     @Autowired
-    public UserService(EntityMapper<User, UserDto> mapper, BCryptPasswordEncoder encoder, UserRepository userRepository) {
-        this.mapper = mapper;
+    public UserService(BCryptPasswordEncoder encoder, UserRepository userRepository, TaskService taskService) {
         this.encoder = encoder;
         this.userRepository = userRepository;
+        this.taskService = taskService;
     }
 
     public Page<User> findAll(Pageable pageable){
@@ -41,7 +39,12 @@ public class UserService {
 
     public User findById(Integer id){
         return userRepository
-                .findById(id).orElseThrow((EntityNotFoundException::new));
+                .findById(id).orElseThrow(EntityNotFoundException::new);
+    }
+
+    public User findByEmail(String email){
+        return userRepository
+                .findByEmail(email).orElseThrow(EntityNotFoundException::new);
     }
 
     @Transactional
@@ -62,14 +65,26 @@ public class UserService {
 
     @Transactional
     public void delete(Integer userId){
-        userRepository.delete(getUserIfExists(userId));
+        User userToDelete = getUserIfExists(userId);
+
+        deleteAllTasksLinkedWithUser(userId);
+
+        userRepository.delete(userToDelete);
+    }
+
+    private void deleteAllTasksLinkedWithUser(Integer userId) {
+        taskService
+                .findSortedByUserFromNewToOld()
+                .stream()
+                .filter(task -> task.getUser().getId().equals(userId))
+                .forEach(t -> taskService.delete(t.getId()));
     }
 
     private User prepareEntityForSaving(User userEntity) {
         userEntity.setPassword(encoder.encode(userEntity.getPassword()));
 
         if(userEntity.getRole()==null){
-            userEntity.setRole(Role.USER);
+            userEntity.setRole(Role.ROLE_USER);
         }
         return userEntity;
     }

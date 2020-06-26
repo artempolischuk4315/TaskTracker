@@ -10,7 +10,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.Collection;
 import java.util.Collections;
@@ -45,8 +44,7 @@ public class UserDto implements UserDetails {
     }
 
     @Override
-    public String getUsername() {
-        return email;
+    public String getUsername() { return email;
     }
 
     @Override

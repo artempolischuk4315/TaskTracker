@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -47,7 +48,7 @@ public class UserController {
                 .body(userFacade.save(userDto));
     }
 
-    @GetMapping("")
+    @GetMapping("/list")
     public ResponseEntity<Page<UserDto>> readAll(@PageableDefault(size = 10,
             sort = "id", direction = Sort.Direction.ASC) Pageable pageable){
 
@@ -63,10 +64,10 @@ public class UserController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Object> update(
-            @Valid @RequestBody UpdateUserDto userDto,
+            @Valid @RequestBody UpdateUserDto updateUserDto,
                 BindingResult bindingResult, @PathVariable Integer id){
 
-        if(!Role.contains(userDto.getRole())){
+        if(!Role.contains(updateUserDto.getRole())){
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST).body(WRONG_ROLE_TYPE);
         }
@@ -78,11 +79,11 @@ public class UserController {
         }
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(userFacade.update(userDto, id));
+                .body(userFacade.update(updateUserDto, id));
     }
 
     @DeleteMapping("/{id}")
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Integer id){
         userFacade.delete(id);
 

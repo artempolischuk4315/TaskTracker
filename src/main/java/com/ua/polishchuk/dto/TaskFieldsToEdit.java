@@ -12,7 +12,7 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class EditTaskDto {
+public class TaskFieldsToEdit {
 
     @NotBlank(message = "Empty first name")
     @Size(max = 50, message = "Too long title")

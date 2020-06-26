@@ -1,12 +1,10 @@
 package com.ua.polishchuk.service;
 
-import com.ua.polishchuk.dto.EditTaskDto;
-import com.ua.polishchuk.dto.TaskDto;
+import com.ua.polishchuk.dto.TaskFieldsToEdit;
 import com.ua.polishchuk.entity.Task;
 import com.ua.polishchuk.entity.TaskStatus;
 import com.ua.polishchuk.repository.TaskRepository;
 import com.ua.polishchuk.repository.UserRepository;
-import com.ua.polishchuk.service.mapper.EntityMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +12,7 @@ import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.NonUniqueResultException;
 import javax.transaction.Transactional;
-import java.util.Collections;
+import java.security.Principal;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -27,32 +25,32 @@ public class TaskService {
     private static final String TASK_NOT_EXISTS = "Task not exists with provided id";
     private static final String NOT_UNIQUE_TITLE = "Not unique title exception";
 
-    private final EntityMapper<Task, TaskDto> mapper;
     private final TaskRepository taskRepository;
-    private final UserService userService;
+    private final UserRepository userRepository;
 
     @Autowired
-    public TaskService(EntityMapper<Task, TaskDto> mapper,
-                       TaskRepository taskRepository, UserService userService) {
-        this.mapper = mapper;
+    public TaskService(TaskRepository taskRepository, UserRepository userRepository) {
+
         this.taskRepository = taskRepository;
-        this.userService = userService;
+        this.userRepository = userRepository;
     }
 
     @Transactional
-    public Task save(Task task){
+    public Task save(Task task, Principal principal){
         checkIfTaskAlreadyExists(task.getTitle());
 
-        Task taskToSave = prepareTaskForSaving(task);
+        Task taskToSave = prepareTaskForSaving(task, principal);
 
         return taskRepository.save(taskToSave);
     }
 
     @Transactional
-    public Task edit(Integer taskId, EditTaskDto fieldsToEdit){
+    public Task edit(Integer taskId, TaskFieldsToEdit fieldsToEdit){
+        Task taskThatShouldBeEdited = getTaskIfExists(taskId);
+
         checkIfNewTitleIsUniqueRelativeToOtherTasks(fieldsToEdit.getTitle(), taskId);
 
-        Task task = setParametersForEditingTask(getTaskIfExists(taskId), fieldsToEdit);
+        Task task = setParametersForEditingTask(taskThatShouldBeEdited, fieldsToEdit);
 
         return taskRepository.save(task);
     }
@@ -68,7 +66,8 @@ public class TaskService {
     public Task changeUser(Integer taskId, Integer userId){
         Task task = getTaskIfExists(taskId);
 
-        task.setUser(userService.findById(userId));
+        task.setUser(userRepository.findById(userId)
+                .orElseThrow(EntityNotFoundException::new));
 
         return taskRepository.save(task);
     }
@@ -103,7 +102,7 @@ public class TaskService {
     private void checkIfNewTitleIsUniqueRelativeToOtherTasks(String title, Integer id) {
         Optional<Task> task = taskRepository.findByTitle(title);
 
-        if(task.isPresent() && !task.get().getId().equals(id)){
+        if(task.isPresent()&&!task.get().getId().equals(id)){
             throw new NonUniqueResultException(NOT_UNIQUE_TITLE);
         }
     }
@@ -116,7 +115,7 @@ public class TaskService {
         return task.get();
     }
 
-    private Task setParametersForEditingTask(Task task, EditTaskDto fieldsToEdit) {
+    private Task setParametersForEditingTask(Task task, TaskFieldsToEdit fieldsToEdit) {
         return Task.builder()
                 .id(task.getId())
                 .user(task.getUser())
@@ -126,7 +125,10 @@ public class TaskService {
                 .build();
     }
 
-    private Task prepareTaskForSaving(Task taskToSave){
+    private Task prepareTaskForSaving(Task taskToSave, Principal principal){
+        taskToSave.setUser(userRepository
+                .findByEmail(principal.getName()).orElseThrow(EntityNotFoundException::new));
+
         if(taskToSave.getStatus() == null){
             taskToSave.setStatus(TaskStatus.VIEW);
         }
