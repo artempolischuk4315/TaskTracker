@@ -35,7 +35,7 @@ public class TaskController {
     public ResponseEntity<List<TaskDto>> readAllSortedByUser(
                     @RequestParam(name = "order", defaultValue = "asc") String order){
 
-        return !isOrderParamValid(order) ?
+        return !orderParamValid(order) ?
                 getResponseWithBadRequestStatus() :
                     ResponseEntity.status(HttpStatus.OK).body(taskFacade.findSortedByUser(order));
     }
@@ -112,7 +112,7 @@ public class TaskController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
-    private boolean isOrderParamValid(String order) {
+    private boolean orderParamValid(String order) {
         return order.equals("asc") || order.equals("desc");
     }
 
