@@ -27,7 +27,7 @@ public class TaskMapper implements EntityMapper<Task, TaskDto> {
                 .title(dto.getTitle())
                 .status(dto.getStatus())
                 .description(dto.getDescription())
-                .user(User.builder().id(dto.getId()).build())
+                .user(User.builder().id(dto.getUserId()).build())
                 .build();
     }
 }

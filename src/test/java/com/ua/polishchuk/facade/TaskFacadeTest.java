@@ -6,6 +6,7 @@ import com.ua.polishchuk.entity.Task;
 import com.ua.polishchuk.entity.TaskStatus;
 import com.ua.polishchuk.entity.User;
 import com.ua.polishchuk.service.TaskService;
+import com.ua.polishchuk.service.UserService;
 import com.ua.polishchuk.service.mapper.EntityMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -40,6 +42,9 @@ class TaskFacadeTest {
 
     @Mock
     TaskService taskService;
+
+    @Mock
+    UserService userService;
 
     @Mock
     EntityMapper<Task, TaskDto> mapper;
@@ -70,7 +75,8 @@ class TaskFacadeTest {
     void saveShouldReturnTaskDto(){
         Principal principal = new PrincipalImpl("principal");
 
-        when(taskService.save(task, principal)).thenReturn(task);
+        when(taskService.save(task,User.builder().id(USER_ID).build())).thenReturn(task);
+        when(userService.findByEmail(principal.getName())).thenReturn(User.builder().id(USER_ID).build());
         when(mapper.mapEntityToDto(task)).thenReturn(taskDto);
         when(mapper.mapDtoToEntity(taskDto)).thenReturn(task);
 
@@ -102,11 +108,20 @@ class TaskFacadeTest {
     @Test
     void changeUserShouldReturnTaskDto(){
         when(mapper.mapEntityToDto(task)).thenReturn(taskDto);
-        when(taskService.changeUser(ID, USER_ID)).thenReturn(task);
+        when(userService.findById(USER_ID)).thenReturn(User.builder().id(USER_ID).build());
+
+        when(taskService.changeUser(ID, User.builder().id(USER_ID).build())).thenReturn(task);
 
         TaskDto actual = systemUnderTest.changeUser(ID, USER_ID);
 
         assertEquals(taskDto, actual);
+    }
+
+    @Test
+    void deleteShouldInvokeService(){
+        systemUnderTest.delete(ID);
+
+        verify(taskService).delete(ID);
     }
 
     private static Task getTask(){

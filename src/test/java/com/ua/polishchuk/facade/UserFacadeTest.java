@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -87,6 +88,13 @@ class UserFacadeTest {
         UserDto actual = systemUnderTest.update(userFieldsToUpdate, user.getId());
 
         assertEquals(userDto, actual);
+    }
+
+    @Test
+    void deleteShouldInvokeService(){
+        systemUnderTest.delete(ID);
+
+        verify(userService).delete(ID);
     }
 
     private static UserFieldsToUpdate getFieldsToUpdate(){

@@ -4,7 +4,9 @@ import com.ua.polishchuk.dto.TaskDto;
 import com.ua.polishchuk.dto.TaskFieldsToEdit;
 import com.ua.polishchuk.entity.Task;
 import com.ua.polishchuk.entity.TaskStatus;
+import com.ua.polishchuk.entity.User;
 import com.ua.polishchuk.service.TaskService;
+import com.ua.polishchuk.service.UserService;
 import com.ua.polishchuk.service.mapper.EntityMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,11 +21,13 @@ public class TaskFacade {
     private static final String ASC = "asc";
 
     private final TaskService taskService;
+    private final UserService userService;
     private final EntityMapper<Task, TaskDto> mapper;
 
     @Autowired
-    public TaskFacade(TaskService taskService, EntityMapper<Task, TaskDto> mapper) {
+    public TaskFacade(TaskService taskService, UserService userService, EntityMapper<Task, TaskDto> mapper) {
         this.taskService = taskService;
+        this.userService = userService;
         this.mapper = mapper;
     }
 
@@ -42,7 +46,9 @@ public class TaskFacade {
     public TaskDto save(TaskDto taskDto, Principal principal){
         Task taskToCreate = mapper.mapDtoToEntity(taskDto);
 
-        return mapper.mapEntityToDto(taskService.save(taskToCreate, principal));
+        User taskOwnerUser = userService.findByEmail(principal.getName());
+
+        return mapper.mapEntityToDto(taskService.save(taskToCreate, taskOwnerUser));
     }
 
     public TaskDto edit(Integer taskId, TaskFieldsToEdit editTaskDto){
@@ -54,7 +60,10 @@ public class TaskFacade {
     }
 
     public TaskDto changeUser(Integer taskId, Integer userId){
-        return mapper.mapEntityToDto(taskService.changeUser(taskId, userId));
+
+        User userToSet = userService.findById(userId);
+
+        return mapper.mapEntityToDto(taskService.changeUser(taskId, userToSet));
     }
 
     public void delete(Integer taskId){

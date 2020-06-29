@@ -58,9 +58,9 @@ public class UserService {
 
     @Transactional
     public User update(UserFieldsToUpdate fieldsToUpdate, Integer userId){
-        User user = setParametersOfUpdatedUser(getUserIfExists(userId), fieldsToUpdate);
+        User userToUpdate = setParametersOfUpdatedUser(getUserIfExists(userId), fieldsToUpdate);
 
-        return userRepository.save(user);
+        return userRepository.save(userToUpdate);
     }
 
     @Transactional
@@ -90,14 +90,11 @@ public class UserService {
     }
 
     private User setParametersOfUpdatedUser(User userToUpdate, UserFieldsToUpdate fieldsToUpdate){
-        return User.builder()
-                .role(Role.valueOf(fieldsToUpdate.getRole().toUpperCase()))
-                .firstName(fieldsToUpdate.getFirstName())
-                .lastName(fieldsToUpdate.getLastName())
-                .id(userToUpdate.getId())
-                .email(userToUpdate.getEmail())
-                .password(userToUpdate.getPassword())
-                .build();
+        userToUpdate.setFirstName(fieldsToUpdate.getFirstName());
+        userToUpdate.setLastName(fieldsToUpdate.getLastName());
+        userToUpdate.setRole(Role.valueOf(fieldsToUpdate.getRole().toUpperCase()));
+
+        return userToUpdate;
     }
 
     private User getUserIfExists(Integer userId) {

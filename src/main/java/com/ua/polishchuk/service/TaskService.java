@@ -3,8 +3,8 @@ package com.ua.polishchuk.service;
 import com.ua.polishchuk.dto.TaskFieldsToEdit;
 import com.ua.polishchuk.entity.Task;
 import com.ua.polishchuk.entity.TaskStatus;
+import com.ua.polishchuk.entity.User;
 import com.ua.polishchuk.repository.TaskRepository;
-import com.ua.polishchuk.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +12,6 @@ import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.NonUniqueResultException;
 import javax.transaction.Transactional;
-import java.security.Principal;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -26,20 +25,17 @@ public class TaskService {
     private static final String NOT_UNIQUE_TITLE = "Not unique title exception";
 
     private final TaskRepository taskRepository;
-    private final UserRepository userRepository;
 
     @Autowired
-    public TaskService(TaskRepository taskRepository, UserRepository userRepository) {
-
+    public TaskService(TaskRepository taskRepository) {
         this.taskRepository = taskRepository;
-        this.userRepository = userRepository;
     }
 
     @Transactional
-    public Task save(Task task, Principal principal){
+    public Task save(Task task, User taskOwnerUser){
         checkIfTaskAlreadyExists(task.getTitle());
 
-        Task taskToSave = prepareTaskForSaving(task, principal);
+        Task taskToSave = prepareTaskForSaving(task, taskOwnerUser);
 
         return taskRepository.save(taskToSave);
     }
@@ -50,9 +46,9 @@ public class TaskService {
 
         checkIfNewTitleIsUniqueRelativeToOtherTasks(fieldsToEdit.getTitle(), taskId);
 
-        Task task = setParametersForEditingTask(taskThatShouldBeEdited, fieldsToEdit);
+        taskThatShouldBeEdited = setParametersForEditingTask(taskThatShouldBeEdited, fieldsToEdit);
 
-        return taskRepository.save(task);
+        return taskRepository.save(taskThatShouldBeEdited);
     }
 
     @Transactional
@@ -63,11 +59,10 @@ public class TaskService {
     }
 
     @Transactional
-    public Task changeUser(Integer taskId, Integer userId){
+    public Task changeUser(Integer taskId, User userToSet){
         Task task = getTaskIfExists(taskId);
 
-        task.setUser(userRepository.findById(userId)
-                .orElseThrow(EntityNotFoundException::new));
+        task.setUser(userToSet);
 
         return taskRepository.save(task);
     }
@@ -116,18 +111,14 @@ public class TaskService {
     }
 
     private Task setParametersForEditingTask(Task task, TaskFieldsToEdit fieldsToEdit) {
-        return Task.builder()
-                .id(task.getId())
-                .user(task.getUser())
-                .status(task.getStatus())
-                .title(fieldsToEdit.getTitle())
-                .description(fieldsToEdit.getDescription())
-                .build();
+        task.setTitle(fieldsToEdit.getTitle());
+        task.setDescription(fieldsToEdit.getDescription());
+
+        return task;
     }
 
-    private Task prepareTaskForSaving(Task taskToSave, Principal principal){
-        taskToSave.setUser(userRepository
-                .findByEmail(principal.getName()).orElseThrow(EntityNotFoundException::new));
+    private Task prepareTaskForSaving(Task taskToSave, User taskOwnerUser){
+        taskToSave.setUser(taskOwnerUser);
 
         if(taskToSave.getStatus() == null){
             taskToSave.setStatus(TaskStatus.VIEW);
