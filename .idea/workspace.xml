@@ -2,25 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="cbb8fc5a-80b5-4538-bb13-12a08135817e" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/ua/polishchuk/service/LoginServiceTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/ua/polishchuk/service/TaskServiceTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/ua/polishchuk/service/UserServiceTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/ua/polishchuk/service/mapper/TaskMapperTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/ua/polishchuk/service/mapper/UserMapperTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/ua/polishchuk/facade/TaskFacade.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/ua/polishchuk/facade/TaskFacade.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/ua/polishchuk/service/TaskService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/ua/polishchuk/service/TaskService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/ua/polishchuk/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/ua/polishchuk/service/UserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/ua/polishchuk/service/mapper/impl/TaskMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/ua/polishchuk/service/mapper/impl/TaskMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/ua/polishchuk/ApplicationTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/ua/polishchuk/facade/TaskFacadeTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/ua/polishchuk/facade/TaskFacadeTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/ua/polishchuk/facade/UserFacadeTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/ua/polishchuk/facade/UserFacadeTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/ua/polishchuk/facade/TaskFacade.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/ua/polishchuk/facade/TaskFacade.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/ua/polishchuk/service/TaskService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/ua/polishchuk/service/TaskService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/ua/polishchuk/service/UserService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/ua/polishchuk/service/UserService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/com/ua/polishchuk/ApplicationTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/com/ua/polishchuk/facade/TaskFacadeTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/test-classes/com/ua/polishchuk/facade/TaskFacadeTest.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/com/ua/polishchuk/facade/UserFacadeTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/test-classes/com/ua/polishchuk/facade/UserFacadeTest.class" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -49,8 +32,10 @@
       <usages-collector id="statistics.file.extensions.open">
         <counts>
           <entry key="class" value="2" />
+          <entry key="gitignore" value="1" />
           <entry key="java" value="130" />
           <entry key="properties" value="3" />
+          <entry key="sql" value="1" />
           <entry key="xml" value="3" />
         </counts>
       </usages-collector>
@@ -58,7 +43,9 @@
         <counts>
           <entry key="CLASS" value="2" />
           <entry key="JAVA" value="130" />
+          <entry key="PLAIN_TEXT" value="1" />
           <entry key="Properties" value="3" />
+          <entry key="SQL" value="1" />
           <entry key="XML" value="3" />
         </counts>
       </usages-collector>
@@ -89,11 +76,27 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/ua/polishchuk/service/mapper/impl/TaskMapper.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="425">
               <caret line="29" column="55" selection-start-line="29" selection-start-column="55" selection-end-line="29" selection-end-column="55" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/resources/db/task_tracker_dump.sql">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-153" />
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/.gitignore">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="51">
+              <caret line="3" column="5" lean-forward="true" selection-start-line="3" selection-start-column="5" selection-end-line="3" selection-end-column="5" />
             </state>
           </provider>
         </entry>
@@ -167,6 +170,7 @@
         <option value="$PROJECT_DIR$/src/test/java/com/ua/polishchuk/service/LoginServiceTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/ua/polishchuk/service/mapper/impl/TaskMapper.java" />
         <option value="$PROJECT_DIR$/src/test/java/com/ua/polishchuk/service/mapper/TaskMapperTest.java" />
+        <option value="$PROJECT_DIR$/.gitignore" />
       </list>
     </option>
   </component>
@@ -328,6 +332,14 @@
               <item name="TaskTracker_test" type="b2602c69:ProjectViewProjectNode" />
               <item name="TaskTracker_test" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="resources" type="462c0819:PsiDirectoryNode" />
+              <item name="db" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="TaskTracker_test" type="b2602c69:ProjectViewProjectNode" />
+              <item name="TaskTracker_test" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="test" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -390,7 +402,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1593426491790" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1593426629876" />
     <property name="extract.method.default.visibility" value="private" />
   </component>
   <component name="RecentsManager">
@@ -398,6 +410,7 @@
       <recent name="com.ua.polishchuk.service" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Programming\TaskTracker_test\src\main\resources\db" />
       <recent name="D:\Programming\TaskTracker_test\src\main\resources" />
       <recent name="D:\Programming\TaskTracker_test\src\main\java\com\ua\polishchuk" />
     </key>
@@ -544,6 +557,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24496645" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -933,6 +947,18 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="425">
           <caret line="29" column="55" selection-start-line="29" selection-start-column="55" selection-end-line="29" selection-end-column="55" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/db/task_tracker_dump.sql">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-153" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="51">
+          <caret line="3" column="5" lean-forward="true" selection-start-line="3" selection-start-column="5" selection-end-line="3" selection-end-column="5" />
         </state>
       </provider>
     </entry>
